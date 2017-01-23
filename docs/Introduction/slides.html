@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Introduction to Lattice Boltzmann</title>
+  <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+  <script src="lib/handlebars.js"> </script>
+  <script src="mathjax.js"></script>
+  <script src="http://cdn.mathjax.org/mathjax/1.1-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> </script>
+  <link href='http://fonts.googleapis.com/css?family=Roboto:100,600' rel='stylesheet' type='text/css' />
+  <script src="lib/highlight.pack.js"></script>
+
+  <script>
+    // dzslides overwrites $
+    jQuery.noConflict();
+  </script>
+  <link rel="stylesheet" title="Magula" href="style/dark.css">
+</head>
+<body>
+<!-- Your Slides -->
+<!-- One section is one slide -->
+
+<section>
+  <h1 class="title">The Buggy Way of Programming</h1>
+  <h3 class="date"><span style="font-weight:lighter;">Rasmus Buchmann</span> &amp; <b>Maximilian Klein</b></h3>
+</section>
+<section id="what-are-these-talks-about" class="slide level1">
+<h2>What are these talks about</h2>
+<ul class="incremental">
+<li>Different ways of programming</li>
+<li>No persuasion to change</li>
+<li>Provocation!</li>
+</ul>
+</ul>
+</section>
+<section>
+  <blockquote cite="http:\/\/www.worrydream.com">
+    Once you think you know what you are doing you stop looking around for other things [...] <br/>you become blind
+  </blockquote>
+  <cite>Bret Victor in The Future of Programming</cite> 
+</section>
+<section id="programming-should-be" class="slide level1">
+<h1 class="shrink">Programming should be</h1>
+<ul class="incremental">
+<li>Fun!</li>
+<li>Creative</li>
+<li>About getting ideas into programs</li>
+<li>A tool that helps people</li>
+</ul>
+</section>
+<section id="programming-usually-is" class="slide level1">
+<h1 class="shrink">Programming usually is</h1>
+<ul class="incremental">
+<li>Not so much fun!</li>
+<li>Not so creative</li>
+<li>about getting bugs out of programs</li>
+<li>a tool that will annoy you!</li>
+</ul>
+</section>
+<section>
+  <h1>Structure</h1>
+  <ul>
+    <li>Creativity</li>
+    <li>Reusability</li>
+    <li>Simplicity</li>
+  </ul>
+</section>
+<section class="chapter1">
+  <h1>Creativity!</h1>
+</section>
+<section id="programming-is-creative" class="slide level1">
+<div class="heading1">Creativity</div>
+<h2>Is Programming a creative task?</h2>
+<ul class="incremental">
+<li>Programming is full of choices</li>
+<li>Is there <b>the one</b> right way?</li>
+<li>Or can we be creative?</li>
+</ul>
+</section>
+<section><div class="heading1">Creativity</div>
+  <h1>The Shoe Analog</h1>
+</section>
+<section><div class="heading1">Creativity</div>
+  <h1>A Shoe should be</h1>
+  <div style="position:absolute; right:20%; bottom:20%">Breathable</div>
+</section>
+<section><div class="heading1">Creativity</div>
+  <h1>A Shoe should be</h1>
+  <div style="position:absolute; left:10%; bottom:30%">Robust</div>
+  <div style="position:absolute; right:20%; bottom:20%">Breathable</div>
+</section>
+<section><div class="heading1">Creativity</div>
+  <h1>A Shoe should be</h1>
+  <div style="position:absolute; left:20%; bottom:15%">Comfortable</div>
+  <div style="position:absolute; left:10%; bottom:30%">Robust</div>
+  <div style="position:absolute; right:20%; bottom:20%">Breathable</div>
+</section>
+<section><div class="heading1">Creativity</div>
+  <h1>A Shoe should be</h1>
+  <div style="position:absolute; right:20%; top:15%">Good Fitting</div>
+  <div style="position:absolute; left:20%; bottom:15%">Comfortable</div>
+  <div style="position:absolute; left:10%; bottom:30%">Robust</div>
+  <div style="position:absolute; right:20%; bottom:20%">Breathable</div>
+</section>
+<section><div class="heading1">Creativity</div>
+  <h1>A Shoe should be</h1>
+  <div style="position:absolute; left:10%; top:20%">Foot Shaped</div>
+  <div style="position:absolute; right:20%; top:15%">Good Fitting</div>
+  <div style="position:absolute; left:20%; bottom:15%">Comfortable</div>
+  <div style="position:absolute; left:10%; bottom:30%">Robust</div>
+  <div style="position:absolute; right:20%; bottom:20%">Breathable</div>
+</section>
+<section><div class="heading1">Creativity</div>
+  <h1>A Shoe should be</h1>
+  <div style="position:absolute; left:20%; top:10%">Weather-proof</div>
+  <div style="position:absolute; left:10%; top:20%">Foot Shaped</div>
+  <div style="position:absolute; right:20%; top:15%">Good Fitting</div>
+  <div style="position:absolute; left:20%; bottom:15%">Comfortable</div>
+  <div style="position:absolute; left:10%; bottom:30%">Robust</div>
+  <div style="position:absolute; right:20%; bottom:20%">Breathable</div>
+</section>
+<section><div class="heading1">Creativity</div>
+  <h1>Implementations differ</h1>
+  <div>
+    <img src="img/shoe1.jpg" height="300"/> <img src="img/shoe2.jpg" height="300" /> <img src="img/shoe3.jpg" height="300" />
+  </div>
+</section>
+<section><div class="heading1">Creativity</div>
+  <h1>Implementations differ</h1>
+  <div>
+    <img src="img/shoe1.jpg" height="300"/> <img src="img/shoe2.jpg" height="300" /> <img src="img/shoe3.jpg" height="300" />
+    <br/><center>A question of taste... (no right or wrong)</center>
+  </div>
+</section>
+<section><div class="heading1">Creativity</div>
+<h2>Creativity is bad for Programming ?</h2>
+<ul class="incremental">
+<li>Libraries must have well defined interfaces</li>
+<li>You cannot use APIs without learning those interfaces</li>
+</ul>
+</section>
+<section><div class="heading1">Creativity</div>
+  <h1>No!</h1>
+  <ul class="incremental">
+  <li>Creativity is vital!</li>
+  <li>But it conflicts...</li>
+  </ul>
+</section>
+<section><div class="heading1">Creativity</div>
+  <h1>No!</h1>
+  <ul>
+  <li>Creativity is vital!</li>
+  <li>But it conflicts... all the time</li>
+  </ul>
+</section>
+<section><div class="heading1">Creativity</div>
+  <h2>Simple example</h2>
+  <br/>
+  <pre><code class="cpp" language="cpp">
+grp = createGroup(rgb(0,0,150));
+grp.addTextParagraph("Lorem Ipsum...", rgb(0,0,0));
+innerGrp = grp.createGroup(rgb(200,0,0));
+innerGrp.drawCenteredText("Hello World", rgb(204,203,10));
+  </code></pre>
+</section>
+<section><div class="heading1">Creativity</div>
+  <h2>Simple example</h2>
+  <br/>
+  <pre><code class="cpp" language="cpp">
+grp = createGroup(rgb(0,0,150));
+grp.addTextParagraph("Lorem Ipsum...", rgb(0,0,0));
+innerGrp = grp.createGroup(rgb(200,0,0));
+innerGrp.drawCenteredText("Hello World", rgb(204,203,10));
+  </code></pre>
+  <br/>
+  <center>Why is this code bad for creativity?</center>
+</section>
+<section><div class="heading1">Creativity</div>
+  <h2>Simple example</h2>
+  <br/>
+  <pre><code class="cpp" language="cpp">
+grp = createGroup(rgb(0,0,150));
+grp.addTextParagraph("Lorem Ipsum...", rgb(0,0,0));
+innerGrp = grp.createGroup(rgb(200,0,0));
+innerGrp.drawCenteredText("Hello World", rgb(204,203,10));
+  </code></pre>
+  <br/>
+  <center>Why is this code bad for creativity?</center>
+  <br/>
+  <center>Nobody else can work with the content!</center>
+</section>
+<section>
+  <h2>Simple example 2</h2>
+  <br/>
+  <pre><code class="cpp" language="cpp">
+content = "&lt;div&gt;Lorem Ipsum ....  \
+  &lt;div&gt;&lt;center&gt;Hello World&lt;/center&gt;&lt;/div&gt;";
+HTMLRenderer.render(content);
+  </code></pre>
+</section>
+<section>
+  <h2>Simple example 2</h2>
+  <br/>
+  <pre><code class="cpp" language="cpp">
+content = "&lt;div&gt;Lorem Ipsum ....  \
+  &lt;div&gt;&lt;center&gt;Hello World&lt;/center&gt;&lt;/div&gt;";
+HTMLRenderer.render(content);
+  </code></pre>
+  <br/>
+  <center>You can simply work with the content in any way you want</center>
+</section>
+<section>
+  <h2>Simple example 2</h2>
+  <br/>
+  <pre><code class="cpp" language="cpp">
+content = "&lt;div&gt;Lorem Ipsum ....  \
+  &lt;div&gt;&lt;center&gt;Hello World&lt;/center&gt;&lt;/div&gt;";
+HTMLRenderer.render(content);
+  </code></pre>
+  <br/>
+  <center>You can simply work with the content in any way you want<br/>(even in a way that wasn't intended)</center>
+</section>
+<section>
+  <center style="margin-top:100px;"><img src="img/crop_howgoogleworks.gif" height="900" />
+  <br/>
+  Possible due to the simple/open HTML format</center>
+  <div style="position:absolute;right:50px;top:20px;font-size:0.3em"><a href="http://www.naturalranks.co.uk/2014/03/how-google-works/" >http://www.naturalranks.co.uk/2014/03/how-google-works/</a></div>
+</section>  
+<section>
+  <h2>Google would be impossible when...</h2>
+  <center><p>the web would be a thin-client system!</p></center>
+</section>
+<section>
+  <h1>Google is possible as...</h1>
+  <center><p>the web is based on data!</p></center>
+</section>
+<section>
+  <h1>Google is possible as...</h1>
+  <center><p>the web is open!</p></center>
+</section>
+<section>
+  <h1>Google is possible as...</h1>
+  <center><p>the web allows for creativity!</p></center>
+</section>
+<section><div class="heading1">Creativity</div>
+  <h1>What is Important?</h1>
+  <p>No unnecessary <b>information hiding</b></p>
+</section>
+<section><div class="heading1">Creativity</div>
+  <h2>It is possible to work with Metadata</h2>
+  <p><pre><code>{
+  "Translation" : [1,4,0],
+  "Rotation" : [0.4,1,0,0],
+  "Metadata" : {
+    "RotationType" : "Quaternion",
+    "TranslationUnit" : "Centimeter"
+  }
+}</code></pre></p>
+</section>
+<section>
+  <h1>So, make it possible!</h1>
+</section>
+<section><div class="heading1">Creativity</div>
+  <h2><span style="color:#aaa">Well...</span><br/> There is still a problem</h2>
+  <p>How to communicate semantics!... That's hard!</p>
+  <footer>We think we have an idea for that.. we are currently working on that</footer>
+</section>
+<section class="chapter2">
+  <h1>Reusability!</h1>
+</section>
+<section><div class="heading2">Reusability</div>
+  <h1>The Library Problem</h1>
+  <center><img src="img/libanythingproblem1.png" /></center>
+</section>
+<section><div class="heading2">Reusability</div>
+  <h1>The Library Problem</h1>
+  <center><img src="img/libanythingproblem2.png" /></center>
+  <footer>We assume LibAnything v1 & v2 have a security issue and we want to migrate</footer>
+</section>
+<section><div class="heading2">Reusability</div>
+  <h1>The Library Problem</h1>
+  <center><img src="img/libanythingproblem3.png" /></center>
+</section>
+<section><div class="heading2">Reusability</div>
+  <h1>The Library Problem</h1>
+  <center><img src="img/libanythingproblem4.png" /></center>
+</section>
+<section><div class="heading2">Reusability</div>
+  <h1>The Library Problem</h1>
+  <p><center><b>*!#"+*!#$§ !</b></center></p>
+</section>
+<section><div class="heading2">Reusability</div>
+  <h2>In reality there is no LibAnything</h2>
+  <center><img src="img/nolibanythingproblem.png" /></center>
+</section>
+<section><div class="heading2">Reusability</div>
+  <h1>The Injection Problem</h1>
+  <center><img src="img/libanythingproblem1.png" /></center>
+</section>
+<section><div class="heading2">Reusability</div>
+  <h1>The Injection Problem</h1>
+  <center><img src="img/libanythingtypeproblem1.png" />
+  <br/>Usually interactions are not that simple...
+  </center>
+</section>
+<section><div class="heading2">Reusability</div>
+  <h1>The Injection Problem</h1>
+  <center><img src="img/libanythingtypeproblem2.png" />
+  <br/>Libraries introduce custom types...
+  </center>
+</section>
+<section><div class="heading2">Reusability</div>
+  <h1>The Injection Problem</h1>
+  <center><img src="img/libanythingtypeproblem3.png" /><br/>
+  Which are used everywhere in MyProgram...
+  </center>
+</section>
+<section><div class="heading2">Reusability</div>
+  <h2>The Injection Problem</h2>
+  <br/>
+  <pre><code class="cpp">
+    QMatrix3x3 rotation = ...;
+    Eigen::Matrix3D eigenRotation;
+    for(int i=0; i < 9; i++){
+      eigenRotation[i] = rotation[i%3][i/3];
+    }
+  </code></pre>
+  <br/>
+  <center>Who doesn't like this?</center>
+  <footer>This is only exemplary code, it won't compile</footer>
+</section>
+<section><div class="heading2">Reusability</div>
+  <h2>The Dependency Problem</h2>
+  <center><img src="img/libanythingtypeproblem4.png" /><br/>
+  Or we use only a subset of the features..
+  </center>
+</section>
+<section><div class="heading2">Reusability</div>
+  <h2>The Dependency Problem</h2>
+  <center><img src="img/libanythingtypeproblem5.png" /><br/>
+  But we are (indirectly) dependent on all features...<br/>And they can have further dependencies...
+  </center>
+  <footer>Even on features we don't need at all!</footer>
+</section>
+<section><div class="heading2">Reusability</div>
+  <h2>The Dependency Problem</h2>
+  <center><img src="img/libanythingtypeproblem6.png" /><br/>
+  And sometimes you have to fix problems that are / might be irrelevant for you..
+  </center>
+</section>
+<section><div class="heading2">Reusability</div>
+  <h1>The Semantic Issue</h1>
+  <center><img src="img/libanythingsemanticproblem1.png" /><br/>
+  Two function calls with different names...
+  </center>
+</section>
+<section><div class="heading2">Reusability</div>
+  <h1>The Semantic Issue</h1>
+  <center><img src="img/libanythingsemanticproblem2.png" /><br/>
+  LibAnything decides to rename the functions...
+  </center>
+  <footer>This doesn't happen often but can have drastic consequences..</footer>
+</section>
+<section><div class="heading2">Reusability</div>
+  <h1>The Library Problem</h1>
+  <ul>
+    <li>Strong dependence (e.g. through type injection)</li>
+    <li>Mostly syntactical dependence</li>
+  </ul>
+</section>
+<section><div class="heading2">Reusability</div>
+  <h1>The Library Problem</h1>
+  <ul>
+    <li>Strong dependence (e.g. through type injection)</li>
+    <li>Mostly syntactical dependence</li>
+  </ul>
+  <center><b>We want semantical dependence!</b></center>
+</section>
+<section><div class="heading2">Reusability</div>
+  <h2>Why semantical dependence?</h2>
+  <ul>
+    <li>We know what we want!</li>
+    <li>Others are usually experts in the technical details</li>
+  </ul>
+  <center><b>Everybody should be responsible for what he is best at!</b></center>
+</section>
+<section class="chapter3">
+  <h1>Simplicity!</h1>
+</section>
+<section><div class="heading3">Simplicity</div>
+<h2>What's wrong</h2>
+<pre><code class="java">
+public int getNextUniqueID(){
+    uniqueIdCounter = uniqueIdCounter + 1;
+    return uniqueIdCounter;
+}
+</code></pre>
+</section>
+<section><div class="heading3">Simplicity</div>
+<h2>What's wrong</h2>
+<pre><code class="java">
+public int getNextUniqueID(){
+    uniqueIdCounter = uniqueIdCounter + 1;
+    return uniqueIdCounter;
+}
+</code></pre>
+<br/>
+<center>It's impossible to find an error<br/>... without knowing the semantics</center>
+</section>
+<section><div class="heading3">Simplicity</div>
+  <h2>But more important!</h2>
+  <p>Even with semantics.. it is impossible to validate it's correctness..</p>
+  <center>(with the limited knowledge of the whole program)</center>
+</section>
+<section><div class="heading3">Simplicity</div>
+  <h1>That's sad</h1>
+  <p>Two lines.. and we cannot say if the function works correctly</p>
+  <footer>I could even write the function in one line...</footer>
+</section>
+<!--
+<section>
+<ul class="incremental">
+<li>Nobody knows.. you cannot decide seeing only this!</li>
+<li>But it is such a simple routine...</li>
+<li>You need to know what happens on a global level</li>
+<li>OOP with private doesn't solve this problem</li>
+<li>especially in projects with many contributors</li>
+</ul>
+</section>
+<section id="what-is-a-function" class="slide level1">
+<h1>What is a function?</h1>
+<p>(Das vielleicht erst später.. die Introduction sollte vielleicht eher ein Teaser sein)</p>
+<p><strong>Mathematically</strong>:</p>
+<ul class="incremental">
+<li>A function has an specified input and a is deterministic</li>
+<li>It is often possible to prove that a function is correct</li>
+</ul>
+<p><strong>Computer Science</strong> (non pure functions):</p>
+<ul class="incremental">
+<li>A function that can depend on everything</li>
+<li>Mostly impossible to prove correctness</li>
+</ul>
+</section>
+-->
+<section><div class="heading3">Simplicity</div>
+<h3>Let's look at another example</h3>
+<pre><code class="java"><span class="kw">class Counter{
+  private int cnt = 0;
+  public void increment(){
+    cnt = cnt + 1;
+  }
+  public void decrement(){
+    cnt = cnt - 1;
+  }
+  public int getCount(){
+    return cnt;
+  }
+}</code></pre>
+</section>
+<section><div class="heading3">Simplicity</div>
+<h3>Let's look at another example</h3>
+<pre><code class="java"><span class="kw">class Counter{
+  private int cnt = 0;
+  public void increment(){
+    cnt = cnt + 1;
+  }
+  public void decrement(){
+    cnt = cnt - 1;
+  }
+  public int getCount(){
+    return cnt;
+  }
+}</code></pre>
+<center>Okay we have a limited scope</center>
+</section>
+<section><div class="heading3">Simplicity</div>
+<h3>Let's look at another example</h3>
+<pre><code class="java"><span class="kw">class Counter{
+  private int cnt = 0;
+  public void increment(){
+    cnt = cnt + 1;
+  }
+  public void decrement(){
+    cnt = cnt - 1;
+  }
+  public int getCount(){
+    return cnt;
+  }
+}</code></pre>
+<center>Okay we have a limited scope (Check!)</center>
+</section>
+<section><div class="heading3">Simplicity</div>
+  <h1>But you can break it!</h1>
+</section>
+<section><div class="heading3">Simplicity</div>
+  <h1>But you can break it!</h1>
+  <p>With Multithreading!</p>
+</section>
+<section><div class="heading3">Simplicity</div>
+<h1>But you can break it!</h1>
+<ul class="incremental">
+<li>Simply create two threads.
+<ol class="incremental" type="1">
+<li>is constantly incrementing values</li>
+<li>is constantly decrementing values</li>
+</ol>
+</ul>
+</section>
+<section><div class="heading3">Simplicity</div>
+  <h1>Solutions?</h1>
+</section>
+<section><div class="heading3">Simplicity</div>
+  <h1>NO LOCKS!</h1>
+</section>
+<section><div class="heading3">Simplicity</div>
+  <h1>NO LOCKS!<br/>No!</h1>
+</section>
+<section><div class="heading3">Simplicity</div>
+  <h1>NO LOCKS!<br/>No!No!No!</h1>
+</section>
+<section><div class="heading3">Simplicity</div>
+  <h1>NO LOCKS!<br/>No!No!No!No!No!</h1>
+</section>
+
+<section><div class="heading3">Simplicity</div>
+  <h1>Use Values</h1>
+</section>
+
+<section><div class="heading3">Simplicity</div>
+  <h1>Use Values</h1>
+  <p>Immutability is key!</p>
+</section>
+
+<section style="background-color:black;">
+    <div style="color:white;position:absolute; top:50%; text-align:centered;font-size:250%">To be continued...</div>
+</section>
+
+<section>
+  <h2>Thank you for your attention!</h2>
+  <br/>
+  <center>Next presentation: <b>8 May, 16:15, here</b></center>
+  <p><b>Topic:</b> Out of the Tar Pit</p>
+  <img src="img/rasmus.jpg" style="border-radius:50%; position:absolute; right:10%; bottom:10%" height="200"/>
+</section>
+
+<div id="progress-bar"></div>
+
+<!-- Default Style -->
+<script src="style/dzexstyle.css.js"></script>
+<script src="dzslides.js"></script>
+
+<!-- Default Style -->
+<script src="style/style.js"></script>
+<script src="style/dzexstyle.css.js"></script>
+<script src="style/style.css.js"></script>
+<script>
+hljs.tabReplace = '    ';
+hljs.initHighlightingOnLoad();
+
+jQuery(document).ready(function($){
+ 
+ jQueryLoadCSS = function(cssString) {
+     var cssTag = $("<style>" + cssString + "</style>");
+     $("head").append(cssTag); 
+ };
+
+ Dz.width = 1600;
+ Dz.height = 1200;
+ dztemplate = Handlebars.templates["dzexstyle.css"];
+ template = Handlebars.templates["style.css"];
+ loadCss(Dz, dztemplate, template, jQueryLoadCSS);
+
+ initializeMathjax();
+ controlMeanIFrame();
+});
+</script>
+<!-- vim: set fdm=marker: }}} -->
+</body>
+</html>

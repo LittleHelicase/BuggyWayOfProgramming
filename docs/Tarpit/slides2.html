@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Out of the Tar Pit, into the Mud Volcano?</title>
+  <script src="lib/handlebars.js"></script>
+  <!-- <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script> -->
+  <script src="lib/jquery.js"></script>
+  <script src="mathjax.js"></script>
+  <script src="http://cdn.mathjax.org/mathjax/1.1-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> </script>
+  <link href='http://fonts.googleapis.com/css?family=Roboto:100,600' rel='stylesheet' type='text/css' />
+  <link href='http://fonts.googleapis.com/css?family=UnifrakturMaguntia' rel='stylesheet' type='text/css'>
+  <script src="lib/highlight.pack.js"></script>
+
+  <script>
+    // dzslides overwrites $
+    jQuery.noConflict();
+  </script>
+  <link rel="stylesheet" title="Magula" href="style/dark.css">
+</head>
+<body>
+<!-- Your Slides -->
+<!-- One section is one slide -->
+
+<section>
+  <h1 class="title">Out of the Tar Pit</h1>
+  <h3 class="date"><b>Rasmus Buchmann</b>
+    &amp; <span style="font-weight:lighter;"> Maximilian Klein </span></h3>
+</section>
+
+<section>
+  <h2>Last Talk</h2>
+  <div style="margin-top: 20px; margin-bottom: -30px;">We want to write</div>
+  <ul>
+    <li>Fun
+    <li>Creative
+    <li>Powerful
+  </ul>
+  <div>Programs</div>
+</section>
+
+<section>
+  <h2>Biggest Obstacle?</h2>
+</section>
+
+<section>
+  <h2>Biggest Obstacle?</h2>
+  <p>Stuff doesn't work &trade;</p>
+</section>
+
+<section>
+  <h2>Biggest Obstacle?</h2>
+  <p>Stuff doesn't work &trade;</p>
+  <p>The question is: Why?</p>
+</section>
+
+<section>
+  <h2>"Out of the Tar Pit"</h2>
+  <p>One cannot hope to develop, maintain or improve a large program if
+    one is unable to understand it</p>
+</section>
+
+<section>
+  <div class="heading1">Understanding the Tar Pit</div>
+  <h2>Reasons</h2>
+  <ul class="incremental">
+    <li>Complexity
+    <li>Control flow
+    <li>Code Volume
+  </ul>
+</section>
+
+<section>
+  <div class="heading1">Understanding the Tar Pit</div>
+  <h2>Focus</h2>
+  <p style="text-align: center; font-size:140px;">Complexity</p>
+</section>
+
+<section>
+  <div class="heading1">Understanding the Tar Pit</div>
+  <h2>State</h2>
+  <p>Have you tried turning it off and on again?</p>
+</section>
+
+<section>
+  <blockquote cite="http:\/\/www.simple-talk.com\/opinion\/geek-of-the-week\/rich-hickey-geek-of-the-week" style="font-size:90px;">
+    When [programmers] encounter complexity,
+    they consider it a challenge to overcome,
+    rather than an obstacle to remove.
+    Overcoming complexity isn't work, it's waste.
+</blockquote>
+  <cite>Rich Hickey, Inventor of Clojure</cite>
+</section>
+
+<section>
+    <div class="heading1">Understanding the Tar Pit</div>
+    <h2 style="margin-bottom: 30px;">Example</h2>
+    <pre>
+      <code class="cpp" language="cpp" style="font-size: 30px;">
+std::string WhatDoIDo?(const std::vector<std::string> & dirs , char separator) {
+  std::vector<std::string>::const_iterator vsi = dirs.begin();
+  int mCC = vsi->length();
+  std::string compareString = *vsi;
+  for (vsi = dirs.begin() + 1; vsi != dirs.end(); vsi++) {
+    std::pair<std::string::const_iterator , std::string::const_iterator> p =
+      std::mismatch(compareString.begin(), compareString.end(), vsi->begin());
+     if ((p.first - compareString.begin()) < mCC)
+       mCC = p.first - compareString.begin();
+  }
+  std::string::size_type found = compareString.rfind(separator, mCC);
+  return compareString.substr(0 , found);
+}
+  </code>
+</pre>
+</section>
+
+<section>
+  <div class="heading1">Understanding the Tar Pit</div>
+  <h2>Keep in mind</h2>
+  <ul class="incremental">
+    <li>Pointer? Reference?
+    <li>Loop boundaries?
+    <li>Types?
+    <li>Memleaks?
+    <li>Threadsafe?
+    <li>Depends on state?
+  </ul>
+</section>
+
+<section>
+  <div class="heading1">Understanding the Tar Pit</div>
+  <h2>Keep in mind</h2>
+  <ul>
+    <li>Pointer? Reference?
+    <li>Loop boundaries?
+    <li>Types?
+    <li>Memleaks?
+    <li>Threadsafe?
+    <li>Depends on state?
+  </ul>
+  <div style="position:absolute; left: 50%;top: 50%;">Templates?</div>
+</section>
+
+<section>
+  <div class="heading1">Understanding the Tar Pit</div>
+  <h2>Keep in mind</h2>
+  <ul>
+    <li>Pointer? Reference?
+    <li>Loop boundaries?
+    <li>Types?
+    <li>Memleaks?
+    <li>Threadsafe?
+    <li>Depends on state?
+  </ul>
+  <div style="position:absolute; left: 50%;top: 50%;">Templates?</div>
+  <div style="position:absolute; left: 20%;top: 10%;">Operator precedence?</div>
+</section>
+
+<section>
+  <div class="heading1">Understanding the Tar Pit</div>
+  <h2>Keep in mind</h2>
+  <ul>
+    <li>Pointer? Reference?
+    <li>Loop boundaries?
+    <li>Types?
+    <li>Memleaks?
+    <li>Threadsafe?
+    <li>Depends on state?
+  </ul>
+  <div style="position:absolute; left: 50%;top: 50%;">Templates?</div>
+  <div style="position:absolute; left: 20%;top: 10%;">Operator precedence?</div>
+  <div style="position:absolute; left: 45%;top: 60%;">Implicit Casts?</div>
+</section>
+
+<section>
+  <div class="heading1">Understanding the Tar Pit</div>
+  <h2>Keep in mind</h2>
+  <ul>
+    <li>Pointer? Reference?
+    <li>Loop boundaries?
+    <li>Types?
+    <li>Memleaks?
+    <li>Threadsafe?
+    <li>Depends on state?
+  </ul>
+  <div style="position:absolute; left: 50%;top: 50%;">Templates?</div>
+  <div style="position:absolute; left: 20%;top: 10%;">Operator precedence?</div>
+  <div style="position:absolute; left: 45%;top: 60%;">Implicit Casts?</div>
+  <div style="position:absolute; left: 60%;top: 70%;">Copy constructors?</div>
+</section>
+
+<section>
+  <div class="heading1">Understanding the Tar Pit</div>
+  <h2>Keep in mind</h2>
+  <ul>
+    <li>Pointer? Reference?
+    <li>Loop boundaries?
+    <li>Types?
+    <li>Memleaks?
+    <li>Threadsafe?
+    <li>Depends on state?
+  </ul>
+  <div style="position:absolute; left: 50%;top: 50%;">Templates?</div>
+  <div style="position:absolute; left: 20%;top: 10%;">Operator precedence?</div>
+  <div style="position:absolute; left: 45%;top: 60%;">Implicit Casts?</div>
+  <div style="position:absolute; left: 60%;top: 70%;">Copy constructors?</div>
+  <div style="position:absolute; left: 30%;top: 72%;">Ownership?</div>
+</section>
+
+<section>
+  <div class="heading1">Understanding the Tar Pit</div>
+  <h2>Keep in mind</h2>
+  <ul>
+    <li>Pointer? Reference?
+    <li>Loop boundaries?
+    <li>Types?
+    <li>Memleaks?
+    <li>Threadsafe?
+    <li>Depends on state?
+  </ul>
+  <div style="position:absolute; left: 50%;top: 50%;">Templates?</div>
+  <div style="position:absolute; left: 20%;top: 10%;">Operator precedence?</div>
+  <div style="position:absolute; left: 45%;top: 60%;">Implicit Casts?</div>
+  <div style="position:absolute; left: 60%;top: 70%;">Copy constructors?</div>
+  <div style="position:absolute; left: 30%;top: 72%;">Ownership?</div>
+  <div style="position:absolute; left: 40%;top: 85%;">Pre- or Postincrement?</div>
+</section>
+
+<section>
+  <div class="heading1">Understanding the Tar Pit</div>
+  <h2>Keep in mind</h2>
+  <ul>
+    <li>Pointer? Reference?
+    <li>Loop boundaries?
+    <li>Types?
+    <li>Memleaks?
+    <li>Threadsafe?
+    <li>Depends on state?
+  </ul>
+  <div style="position:absolute; left: 50%;top: 50%;">Templates?</div>
+  <div style="position:absolute; left: 20%;top: 10%;">Operator precedence?</div>
+  <div style="position:absolute; left: 45%;top: 60%;">Implicit Casts?</div>
+  <div style="position:absolute; left: 60%;top: 70%;">Copy constructors?</div>
+  <div style="position:absolute; left: 30%;top: 72%;">Ownership?</div>
+  <div style="position:absolute; left: 40%;top: 85%;">Pre- or Postincrement?</div>
+  <div style="position:absolute; left: 65%;top: 40%;">Exceptionsafe?</div>
+</section>
+
+<section>
+  <div class="heading1">Understanding the Tar Pit</div>
+  <h2>Attention is limited</h2>
+  <ul>
+    <li>"Magic number 7"
+    <li>Clutter is complexity too!
+    <li>It's only one (simple) function!
+    <li>Adds to the problems listed before
+  </ul>
+</section>
+
+<section>
+  <figure>
+    <img src="img/interlude.png" width="100%">
+  </figure>
+</section>
+
+<section>
+<div class="heading1">Understanding the Tar Pit</div>
+<h2>Simple Example</h2>
+<img src="img/locks.png" style="margin-top: 100px;">
+</section>
+
+<section>
+  <div class="heading1">Understanding the Tar Pit</div>
+  <h2>Why is that a problem?</h2>
+  <p>Programming is hard, right?</p>
+</section>
+
+<section>
+  <div class="heading1">Understanding the Tar Pit</div>
+  <h2>Why is that a problem?</h2>
+  <p>None of this complexity comes from the task we want to solve!</p>
+</section>
+
+<section>
+  <div class="heading1">Understanding the Tar Pit</div>
+  <h2>Traditional solutions</h2>
+  <ul class="incremental">
+    <li>Abstraction
+    <li>Encapsulation
+    <li>Modularization
+    <li>OOP
+  </ul>
+</section>
+
+<section>
+  <div class="heading1">Understanding the Tar Pit</div>
+  <h2>Traditional problems</h2>
+  <ul class="incremental">
+    <li>Abstraction - Not really
+    <li>Encapsulation - Hidden State
+    <li>Modularization - See last talk :)
+    <li>OOP - The new spaghetti code?
+  </ul>
+</section>
+
+<section>
+  <blockquote>
+    "I invented the term Object-Oriented and I can tell you I did not have C++ in mind."
+  </blockquote>
+  <cite>Alan Kay, inventor of Smalltalk</cite>
+</section>
+
+<section>
+  <h2>What can we do?</h2>
+  <ul>
+    <li>Make elimination of incidental complexity primary goal
+    <li>Learn about alternatives
+    <li>Eliminate unnecessary state
+    <li>Keep rest as simple as possible
+  </ul>
+</section>
+
+<section>
+  <h2>Some suggestions</h2>
+  <ul class="incremental">
+    <li>The right tool for the job</li>
+    <li>Correctness over performance</li>
+    <li>Data is Data is Data</li>
+    <li>Simple isn't easy</li>
+  </ul>
+  <div role="note">Most important: Learn your stuff, think about solutions</div>
+</section>
+
+<section>
+  <h2>The right tool</h2>
+  <p>Choose the right language/paradigm!</p>
+</section>
+
+<section>
+  <h2>Prerequisite:</h2>
+  <p>Know more than one...</p>
+</section>
+
+<section>
+  <h2>New languages?</h2>
+</section>
+
+<section>
+  <h2 style="font-family: 'UnifrakturMaguntia', cursive;">Stevey's Blog Rants</h2>
+  <p style="font-family: Baskerville; font-size: 100px;">Haskell Researchers Announce Discovery of Industry Programmer Who Gives a Sh*t<p>
+</section>
+
+<section>
+  <blockquote>
+    [...] Programming languages are not merely technologies, but habits of mind as well, and nothing changes slower
+  </blockquote>
+  <cite>Paul Graham, Lisp programmer and writer</cite>
+  <div role="note">Viaweb anecdote</div>
+</section>
+
+<section>
+  <div class="heading1">The right tool</div>
+  <h2>Sapir-Whorf</h2>
+  <p>Well designed languages introduce new concepts and ways to think
+    about programs</p>
+</section>
+
+<section>
+  <div class="heading1">The right tool</div>
+  <h2>Even if you're not going to use them directly!</h2>
+</section>
+
+<section>
+  <div class="heading1">The right tool</div>
+  <h2>Some suggestions</h2>
+  <ul>
+    <li>Lisp
+    <li>Python
+    <li>Haskell
+    <li>Erlang
+    <li>Clojure
+    <li>Elm
+  </ul>
+</section>
+
+<section>
+  <blockquote style="font-size: 110px;">Every sufficiently advanced program includes an ad-hoc, informally specified, slow, bug-ridden implementation of half of Common Lisp</blockquote>
+  <cite>Greenspun's tenth rule</cite>
+</section>
+
+<section>
+  <div class="heading1">The right tool</div>
+  <h2>Lisp</h2>
+  <div>
+    <img style="float: right; margin-right: 30px;" src="img/lisp_cycles.png">
+    <ul>
+      <li>Incredibly powerful macro system
+      <li>Homoiconic - Code is data
+      <li>Simplicity and elegance - Common Lisp has only seven core
+      constructs and basically no syntax!
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="heading1">The right tool</div>
+  <h2>Python</h2>
+  <ul>
+    <img style="float: right; margin-top: 100px; margin-right: 20px;" src="img/python-logo.svg" width=20%>
+    <li>The ultimate "Get Things Done" language
+    <li>Great libraries for everything
+    <li>Vastly useful for scientific computing
+    <li>Instructive example of hidden state problems
+  </ul>
+</section>
+
+<section>
+  <div class="heading1">The right tool</div>
+  <h2>Haskell</h2>
+  <img style="float: right; margin-top: 150px; margin-right: 20px;" src="img/Haskell-Logo.svg" width=20%>
+  <ul>
+    <li><b>The</b> pure, functional language
+    <li>Amazing type system
+    <li>True abstractions
+    <li>Impress your friends with category theory
+  </ul>
+</section>
+
+<section>
+  <div class="heading1">The right tool</div>
+  <h2>Erlang</h2>
+  <img style="float: right; margin-top: 150px; margin-right: 20px;" src="img/erlang-logo.svg" width=20%>
+  <ul>
+    <li>Distributed system awesomeness
+    <li>Primary actor model example
+    <li>Strong FFI and binary support
+    <li>Unique error handling
+  </ul>
+</section>
+
+<section>
+  <div class="heading1">The right tool</div>
+  <h2>Others</h2>
+  <ul>
+    <li>Clojure - Pragmatic functional programming
+    <li>Elm - UIs without callbacks
+    <li>Prolog - Logic programming
+    <li>Perl - Write only programming
+    <li>FORTRAN - The Coelacanth of computer science
+    <li>COBOL - COmmon Boilerplate Oriented Language
+  </ul>
+</section>
+
+<section>
+  <div class="heading1">The right tool</div>
+  <h2>Summary</h2>
+  <p>Invent new ways to <b>avoid</b> problems rather than new hacks to work around them</p>
+</section>
+
+<section>
+  <div class="heading1">The right tool</div>
+  <h2>Summary</h2>
+  <p>Work towards writing <b>declarative</b> programs, rather than imperative</p>
+</section>
+
+<section>
+  <div class="heading1">The right tool</div>
+  <h2>Systems everywhere</h2>
+  <p>Usually never writing an isolated program - heterogenity</p>
+</section>
+
+<section>
+  <h1>Correctness over performance</h1>
+</section>
+
+<section>
+  <blockquote>
+    Premature optimization is the root of all evil.
+  </blockquote>
+  <cite>Donald Knuth, no introduction needed</cite>
+</section>
+
+<section>
+  <div class="heading1">Correctness over performance</div>
+  <h2>Example: Locks</h2>
+  <p>Alternatives: STM, Erlang style message passing, etc... Not as efficient, but:
+</section>
+
+<section>
+  <div class="heading1">Correctness over performance</div>
+  <h2>Example: Locks</h2>
+  <ul>
+    <li>Works 100%
+    <li>Saves mental capacity
+    <li>Might even be faster
+  </ul>
+</section>
+
+<section>
+  <div class="heading1">Correctness over performance</div>
+  <h2>Rule of thumb</h2>
+  <p>Optimize at the very last step, it will frequently be unnecessary</p>
+</section>
+
+<section>
+  <div class="heading1">Correctness over performance</div>
+  <h2>Even Better</h2>
+  <p>Why should you be concerned with performance at all?</p>
+</section>
+
+<section>
+  <h2 style="margin-bottom: 30px;">Data is Data is Data</h2>
+  
+</section>
+
+<section>
+  <div class="heading1">Data is Data</div>
+  <h2>...is not an Object!</h2>
+  <p>Don't wrap what is essentially data in a class!</p>
+</section>
+
+<section>
+  <div class="heading1">Data is Data</div>
+  <h2>Use Data to</h2>
+  <ul class="incremental">
+    <li>Alleviate injection problem
+    <li>Unlock powerful abstractions
+    <li>Get Serialization/Networking for free
+    <li>Decoupling via queues
+    <li>Eliminate unnecessary state
+  </ul>
+  <div role="note">Talk about point classes in topology lib</div>
+</section>
+
+<section>
+  <div class="heading1">Data is Data</div>
+  <h2>Immutable Data</h2>
+  <ul>
+    <li>Saves considerable headache
+    <li>Simplifies reasoning about programs
+    <li>Powerful for multithreading
+    <li>Easy to use even in Java or C++
+    <li>More in upcoming talk!
+  </ul>
+</section>
+
+<section>
+  <h1>Simple isn't easy</h1>
+</section>
+
+<section>
+  <div class="heading1">Simple isn't easy</div>
+  <h2>Two meanings</h2>
+  <ul>
+    <li>It's hard work to design a program which is simple
+    <li>What is easiest to learn might not be the most simple solution
+  </ul>
+</section>
+
+<section>
+  <h3>Further Reading/Watching/Fun</h3>
+  <ul style="font-size: 30px; float: left; position: relative; top: -90px;">
+    <li>Structure and Interpretation of Computer Programs (!)</li>
+    <li>Learn you a Haskell for great good!</li>
+    <li>Write yourself a scheme in 48 hours</li>
+    <li>Simplicity ain't easy (Stuart Halloway)</li>
+    <li>The Value of Values (Rich Hickey)</li>
+    <li>Clojure Concurrency (Rich Hickey)</li>
+  </ul>
+  <ul style="font-size: 30px;">
+    <li>Why Scala? (Venkat Subramanian)</li>
+    <li>Wat - Destroy all Software Talks</li>
+    <li>Beating the averages (Paul Graham)</li>
+    <li>Stevey's Blog Rants</li>
+    <li><a href="http://elm-lang.org/">http://elm-lang.org/</a> Beispiele!</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Thank you for your attention!</h2>
+  <br/>
+  <center>Next presentation: <b>15 May, <span style="color:red; font-size:170%">17:00</span>, here</b></center>
+  <p><b>Topic:</b>Bret!</p>
+  <img src="img/max.jpg" style="border-radius:50%; position:absolute; right:10%; bottom:10%" height="200"/>
+</section>
+
+<div id="progress-bar"></div>
+
+<!-- Default Style -->
+<script src="style/dzexstyle.css.js"></script>
+<script src="dzslides.js"></script>
+
+<!-- Default Style -->
+<script src="style/style.js"></script>
+<script src="style/dzexstyle.css.js"></script>
+<script src="style/style.css.js"></script>
+<script>
+hljs.tabReplace = '    ';
+hljs.initHighlightingOnLoad();
+
+jQuery(document).ready(function($){
+
+ jQueryLoadCSS = function(cssString) {
+     var cssTag = $("<style>" + cssString + "</style>");
+     $("head").append(cssTag);
+ };
+
+ Dz.width = 1600;
+ Dz.height = 1200;
+ dztemplate = Handlebars.templates["dzexstyle.css"];
+ template = Handlebars.templates["style.css"];
+ loadCss(Dz, dztemplate, template, jQueryLoadCSS);
+
+ initializeMathjax();
+ controlMeanIFrame();
+});
+</script>
+<!-- vim: set fdm=marker: }}} -->
+</body>
+</html>

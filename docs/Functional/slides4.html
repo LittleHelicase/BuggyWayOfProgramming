@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Functional Programming - Life after OOP?</title>
+  <script src="lib/handlebars.js"></script>
+  <script src="lib/jquery.js"></script>
+  <script src="mathjax.js"></script>
+  <script src="http://cdn.mathjax.org/mathjax/1.1-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> </script>
+  <link href='http://fonts.googleapis.com/css?family=Roboto:100,600' rel='stylesheet' type='text/css' />
+  <link href='http://fonts.googleapis.com/css?family=UnifrakturMaguntia' rel='stylesheet' type='text/css'>
+  <script src="lib/highlight.pack.js"></script>
+
+  <script>
+    // dzslides overwrites $
+    jQuery.noConflict();
+  </script>
+  <link rel="stylesheet" title="Magula" href="style/dark.css">
+  <style>
+    blink {
+    -webkit-animation: blink 1s step-end infinite;
+    animation: blink 1s step-end infinite
+    }
+
+    @-webkit-keyframes blink {
+    67% { opacity: 0 }
+    }
+
+    @keyframes blink {
+    67% { opacity: 0 }
+    }
+  </style>
+</head>
+<body>
+<!-- Your Slides -->
+<!-- One section is one slide -->
+
+<section>
+  <h1 class="title">Life after OOP</h1>
+  <h3 class="date"><b>Rasmus Buchmann</b>
+    &amp; <span style="font-weight:lighter;"> Maximilian Klein </span></h3>
+</section>
+
+<section>
+  <h2>Last Talks</h2>
+  <ul>
+    <li>Reduce complexity!</li>
+    <li>Cut state!</li>
+    <li>Focus on data!</li>
+    <li>Immediate feedback!</li>
+    <li>Write great programs!</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Is it impossible to write great programs in X?</h2>
+</section>
+
+<section>
+  <figure>
+    <img width="100%" src="img/interlude_math.png">
+  </figure>
+</section>
+
+<section>
+  <figure>
+    <img width="100%" src="img/classic_normal.png">
+  </figure>
+</section>
+
+<section>
+  <figure>
+    <img width="100%" src="img/actual_normal.png">
+  </figure>
+</section>
+
+<section>
+  <h2>Everything is in the middle</h2>
+  <p style="font-size: 95px;">If a language encourages a certain style,
+  almost all of its programs will be in that style</p>
+</section>
+
+<section>
+  <h2>Murphy's Corollary:</h2>
+  <p>If that style is nasty, <b>every</b> program you have to fix or lib you need will be written
+    in it</p>
+</section>
+
+<section>
+  <h2 style="margin-top: 60px; margin-bottom: 60px;">Functional Programming</h2>
+  <center>
+    <img src="img/apotheosis.jpg">
+  </center>
+  <footer>The Apotheosis of St. Ignatius - Public Domain</footer>
+</section>
+
+<section>
+  <h2>Advantages</h2>
+  <ul class="incremental">
+    <li>Small, reusable parts
+    <li>Stronger abstractions
+    <li>Focus on immutability</br>
+     -&gt;Less unneeded state
+    <li>Often more expressive
+  </ul>
+</section>
+
+<section>
+    <div class="heading1">Understanding the Tar Pit</div>
+    <h2 style="margin-bottom: 30px;">Example</h2>
+    <pre>
+      <code class="cpp" language="cpp" style="font-size: 30px;">
+std::string WhatDoIDo?(const std::vector&lt;std::string&gt; & dirs , char separator) {
+  std::vector&lt;std::string&gt;::const_iterator vsi = dirs.begin();
+  int mCC = vsi-&gt;length();
+  std::string compareString = *vsi;
+  for (vsi = dirs.begin() + 1; vsi != dirs.end(); vsi++) {
+    std::pair&lt;std::string::const_iterator , std::string::const_iterator&gt; p =
+      std::mismatch(compareString.begin(), compareString.end(), vsi-&gt;begin());
+     if ((p.first - compareString.begin()) &lt; mCC)
+       mCC = p.first - compareString.begin();
+  }
+  std::string::size_type found = compareString.rfind(separator, mCC);
+  return compareString.substr(0 , found);
+}
+  </code>
+</pre>
+</section>
+
+<section>
+  <div class="heading1">Small, reusable parts</div>
+  <h2>Pythonized example</h2>
+  <pre>
+    <code class="python" language="python" style="font-size: 30px;">
+#buggy and brittle, just for demonstration
+def mismatch(a,b):
+    smallest = min(len(a),len(b))
+    for i in range(smallest):
+        if a[i] != b[i]:
+            return i
+    return smallest
+
+def whatDoIDo(dirs, separator):
+    compareString = dirs[0]
+    maxMatch = len(compareString)
+    for currentDir in dirs[1:]:
+        mLength = mismatch(currentDir, compareString)
+        if mLength < maxMatch:
+            maxMatch = mLength
+    lastPathIndex = compareString[:maxMatch + 1].rfind(separator)
+    return compareString[:lastPathIndex]
+    </code>
+  </pre>
+</section>
+
+<section>
+  <h2>Declarative?</h2>
+  <pre>
+    <code class="python" language="python">
+def whatDoIDo2(dirs, separator):
+    maxMatching = mergeStringsWhileEqual(dirs)
+    return substringUntilLast(separator, maxMatching)
+    </code>
+  </pre>
+
+</section>
+
+<section>
+  <h2>More abstract</h2>
+  <pre>
+    <code class="python" language="python">
+def whatDoIDo3(dirs, separator):
+    maxMatching = merge(whileEqual, dirs)
+    return substringUntilLast(separator,
+                              toString(maxMatching))
+    </code>
+  </pre>
+</section>
+
+<section>
+  <div class="heading1">Small, reusable parts</div>
+  <h2>Functional Tools</h2>
+  <pre>
+    <code class="python" language="python" style="font-size: 30px;">
+#Combine lists, stop when "how" returns None
+merge(how, lists)
+
+#Take substring until last occurence of separator
+substringUntilLast(separator, s)
+
+#whileEqual(a,b,c,...,z) = a if all equal,  else None
+whileEqual(*items)
+
+#Members of list until first occurence of None
+listUntilNone(l)
+    </code>
+  </pre>
+</section>
+
+
+<section>
+  <div class="heading1">Small, reusable parts</div>
+  <h2>Implementations</h2>
+  <pre>
+    <code class="python" language="python" style="font-size: 30px;">
+#demonstration code, more "pythonic" or plain better solutions possible
+
+def merge(how, lists):
+    return listUntilNone(map(how, *lists))
+
+def substringUntilLast(separator, s):
+    return s[:s.rfind(separator)+1]
+
+def whileEqual(*items):
+    return functools.reduce(lambda x,y : x if x == y else None, items)
+
+def listUntilNone(l):
+    return itertools.takeWhile(lambda x: x != None, l)
+
+toString = ''.join
+    </code>
+  </pre>
+</section>
+
+<section>
+  <div class="heading1">Small, reusable parts</div>
+  <h2>Bonus</h2>
+  <pre>
+    <code class="python" language="python" style="font-size: 30px;">
+#define function without def and lambda for style points
+whatDoIDo4 = compose(partial(substringUntilLast, "/"),
+                     partial(merge, whileEqual))
+    </code>
+  </pre>
+</section>
+
+<section>
+  <div class="heading1">Small, reusable parts</div>
+  <h2>Summary</h2>
+  <ul>
+    <li>Truly reusable</li>
+    <li>Higher level functions - Truly abstract</li>
+    <li>More declarative:</br>Mind doesn't work like a Turing
+    Machine</li>
+    <li>Not applicable equally well in all languages</li>
+  </ul>
+  <div role="note">Imperative parent assistance</div>
+</section>
+
+<section>
+  <blockquote>
+    It's better to have 100 functions operating on 1 datastructure than 10
+    functions operating on 10 datastructures.
+  </blockquote>
+  <cite>Alan Perlis</cite>
+</section>
+
+<section>
+  <div class="heading1">Small, reusable parts</div>
+  <h2>Functional</h2>
+  <img width="90%" style="margin-left:20px;"
+       src="img/functional_lego.png">
+  <footer style="font-size: 26px;">LEGO&reg; is a trademark of the LEGO Group of companies which does not sponsor, authorize or endorse this site</footer>
+</section>
+
+<section>
+  <div class="heading1">Small, reusable parts?</div>
+  <h2>OOP?</h2>
+  <center>
+    <img width="80%" src="img/oop_lego.png">
+  </center>
+</section>
+
+<!-- <section> -->
+<!--   <div class="heading1">Small, reusable parts?</div> -->
+<!--   <h2>With State?</h2> -->
+<!--   <center> -->
+<!--     <img width="80%" src="img/rubik_lego.png"> -->
+<!--   </center> -->
+<!-- </section> -->
+
+<section>
+  <blockquote>
+    It's better to have 100 functions operating on 1 <b>abstraction</b> than 10
+    functions operating on 10 abstractions.
+  </blockquote>
+  <cite>Alan Perlis, 2.0</cite>
+</section>
+
+<!-- <section> -->
+<!--     <div class="heading1">Stronger Abstractions</div> -->
+<!--     <h2>Aside: Macros</h2> -->
+<!--   <pre> -->
+<!--     <code class="clojure" language="clojure" style="font-size: 30px;"> -->
+<!-- ;equivalent code with severe paren smash-up -->
+<!-- (defn replies-in-seq [client] -->
+<!--   (parse-reply -->
+<!--    (partition-by block-separator -->
+<!--                  (remove garbage? -->
+<!--                          (line-seq (:in @client)))))) -->
+<!-- ;Macros are awesome -->
+<!--     </code> -->
+<!--   </pre> -->
+<!-- </section> -->
+
+<section>
+  <div class="heading1">Stronger Abstractions</div>
+  <h2>Example - Elm</h2>
+<pre>
+<code class="elm" language="elm">
+import Mouse
+
+edgeLength = lift (uncurry max) Mouse.position
+
+resizeableImage n = image n n "/Image.jpg"
+
+main = lift resizeableImage edgeLength
+ </code>
+</pre>
+</section>
+
+<section>
+  <div class="heading1">Stronger Abstractions</div>
+  <h2>Seq abstraction</h2>
+  <p>Treating something as a sequence allows <b>ALL</b> sequence
+    functions to be used on it</p>
+</section>
+
+
+<section>
+  <div class="heading1">Stronger Abstractions</div>
+  <h2>Streaming Example</h2>
+  <pre>
+    <code class="clojure" language="clojure" style="font-size: 30px;">
+(defn messages-from [client]
+  (->> (:in @client)
+       line-seq
+       (map escape-control-chars)
+       (remove str/blank?)
+       (partition-by block-separator?)
+       parse-block))
+    </code>
+  </pre>
+</section>
+
+<section>
+  <div class="heading1">Stronger Abstractions</div>
+  <h2>Lazyness</h2>
+  <ul>
+    <li>Allows infinite lists</br>
+      Powerful for all kinds of data streams</li>
+    <li>Walk only once</li>
+    <li>Decide what you need</li>
+  </ul>
+</section>
+
+<section>
+  <div class="heading1">Stronger Abstractions</div>
+  <h2>New directions</h2>
+<pre>
+  <code class="clojure" language="clojure" style="font-size: 30px;">
+(def stats-graph
+  {:n           (fnk [xs]   (count xs))
+   :mean        (fnk [xs n] (/ (sum identity xs) n))
+   :mean2       (fnk [xs n] (/ (sum #(* % %) xs) n))
+   :variance    (fnk [mean mean2] (- mean2 (* mean mean)))})
+
+(def stats (graph/eager-compile stats-graph))
+
+(stats {:xs [1 2 3 6]})
+  </code>
+</pre>
+</section>
+
+<section>
+  <h2>Noteworthy</h2>
+  <ul>
+    <li>No explicit control flow
+    <li>Different execution strategies
+      <ul>
+        <li>Eager - Calculate all
+        <li>Lazy - Calculate what's needed
+        <li>Parallel - Compute independent parts at the same time
+      </ul>
+  </ul>
+
+</section>
+
+<section>
+  <h2 style="margin-top: 60px;">Referential Transparency</h2>
+  <ul>
+    <li>Large advantages for
+      <ul>
+        <li>Understanding code
+        <li>Rearranging Code
+        <li>Testing
+      </ul>
+    <li>Trivially reloadable!
+  </ul>
+  <div role="note">Idiocracy Avalanche</div>
+</section>
+
+<section>
+  <h2>FP Foundations</h2>
+  <ul>
+    <li>First class functions
+    <li>Lexical closures
+    <li>Lambda expressions
+    <li>Lazyness
+    <li>Persistent Datastructures/Immutability
+    <li>Large, synergetic toolset</br>
+      (Of small, comprehensible functions)
+  </ul>
+</section>
+
+<section>
+  <h2 style="margin-top: 30px;">Go Build!</h2>
+  <center>
+    <img src="img/crawler.jpg">
+  </center>
+<footer>Model by Dave DeGobbi: <a href="https://www.flickr.com/photos/29844928@N07/">www.flickr.com/photos/29844928@N07/</a></footer>
+</section>
+
+<!-- <section> -->
+<!--   <h2>Example:</h2> -->
+<!--   <p>&lt;div&gt;How to annoy web programmers&lt;/span&gt;<p> -->
+<!--     <footer>http://xkcd.com/1144/</footer> -->
+<!-- </section> -->
+
+<section>
+  <h2>Thank you for your attention!</h2>
+  <br/>
+  <center>Next presentation: <b>5 June, 16:15, here</b></center>
+  <p><b>Topic:</b>The Actor Model!</p>
+  <img src="img/max.jpg" style="border-radius:50%; position:absolute; right:10%; bottom:10%" height="200"/>
+</section>
+
+<div id="progress-bar"></div>
+
+<!-- Default Style -->
+<script src="style/dzexstyle.css.js"></script>
+<script src="dzslides.js"></script>
+
+<!-- Default Style -->
+<script src="style/style.js"></script>
+<script src="style/dzexstyle.css.js"></script>
+<script src="style/style.css.js"></script>
+<script>
+hljs.tabReplace = '    ';
+hljs.initHighlightingOnLoad();
+
+jQuery(document).ready(function($){
+
+ jQueryLoadCSS = function(cssString) {
+     var cssTag = $("<style>" + cssString + "</style>");
+     $("head").append(cssTag);
+ };
+
+ Dz.width = 1600;
+ Dz.height = 1200;
+ dztemplate = Handlebars.templates["dzexstyle.css"];
+ template = Handlebars.templates["style.css"];
+ loadCss(Dz, dztemplate, template, jQueryLoadCSS);
+
+ initializeMathjax();
+ controlMeanIFrame();
+});
+</script>
+<!-- vim: set fdm=marker: }}} -->
+</body>
+</html>

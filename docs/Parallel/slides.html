@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Parallelization</title>
+  <script src="lib/handlebars.js"></script>
+  <script src="lib/jquery.js"></script>
+  <script src="mathjax.js"></script>
+  <script src="http://cdn.mathjax.org/mathjax/1.1-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> </script>
+  <link href='http://fonts.googleapis.com/css?family=Roboto:100,600' rel='stylesheet' type='text/css' />
+  <link href='http://fonts.googleapis.com/css?family=UnifrakturMaguntia' rel='stylesheet' type='text/css'>
+  <script src="lib/highlight.pack.js"></script>
+
+  <script>
+    // dzslides overwrites $
+    jQuery.noConflict();
+  </script>
+  <link rel="stylesheet" title="Magula" href="style/dark.css">
+  <style>
+    blink {
+    -webkit-animation: blink 1s step-end infinite;
+    animation: blink 1s step-end infinite
+    }
+
+    @-webkit-keyframes blink {
+    67% { opacity: 0 }
+    }
+
+    @keyframes blink {
+    67% { opacity: 0 }
+    }
+  </style>
+</head>
+<body>
+<!-- Your Slides -->
+<!-- One section is one slide -->
+
+<section>
+  <h1 class="title">Parallelization!</h1>
+  <h3 class="date"><span style="font-weight:lighter;">Rasmus Buchmann</span> &amp; <b>Maximilian Klein</b></h3>
+</section>
+
+<section>
+  <h1>A simple example to start with</h1>
+</section>
+
+<section>
+  <h2>Start and stop...</h2>
+  <center>
+  <table><tr><td>
+  <center><b>Thread 1</b></center>
+  <pre><code class="c++ noindent" language="c++" style="width:700px">
+running = true;
+n = 0;
+startThread2();
+while(running){
+  n = n+1;
+}
+  </code></pre></td><td>
+  <center><b></b></center>
+  <div style="min-width:700px">
+
+
+ 
+
+
+  
+  </div>
+  </td></tr></table>
+  </center>
+</section>
+
+<section>
+  <h2>Start and stop...</h2>
+  <center>
+  <table><tr><td>
+  <center><b>Thread 1</b></center>
+  <pre><code class="c++ noindent" language="c++" style="width:700px">
+running = true;
+n = 0;
+startThread2();
+while(running){
+  n = n+1;
+}
+  </code></pre></td><td>
+  <center><b>Thread 2</b></center>
+  <pre><code class="c++ noindent" language="c++" style="width:700px">
+
+
+running = false;
+
+
+  
+  </code></pre>
+  </td></tr></table>
+  </center>
+</section>
+
+<section>
+  <h2>Start and stop...</h2>
+  <p>Lets look at it...</p>
+</section>
+
+<section>
+  <h2>Start and stop...</h2>
+  <p>If it stops (might) depend on</p>
+  <ul class="incremental">
+    <li>Programming Language</li>
+    <li>Compiler Options</li>
+    <li>CPU Behaviour</li>
+  </ul>
+</section>
+
+<section>
+  <h2 style="margin-top:100px">Start and stop...</h2>
+  <p>If it stops (might) depend on</p>
+  <ul>
+    <li>Programming Language</li>
+    <li>Compiler Options</li>
+    <li>CPU Behaviour</li>
+    <li>Runtime... (On runtime optimized languages...)</li>
+  </ul>
+  <div style="position:absolute; right: 40px; top:550px">
+    <ul class="incremental">
+      <li>CPU Cache size</li>
+      <li>Loop-Length</li>
+      <li>System Scheduler</li>
+      <li>Operating System</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h1>But..</h1>
+  <p>There are methods to avoid these issues!</p>
+</section>
+
+<section>
+  <h1>But..</h1>
+  <p>You can learn those!</p>
+</section>
+
+<section>
+  <h1>Do you really believe everybody uses them correctly?</h1>
+</section>
+
+<section>
+  <blockquote>
+    locking [...] That's something I've done a lot of [...] and I'm tired of trying to get it right, because it's simply far too difficult.
+  </blockquote>
+  <cite>Rich Hickey, <a href="http://youtu.be/dGVqrGmwOAw" style="color:white">Clojure Concurrency</a></cite>
+</section>
+
+<section>
+  <h1>Is there another way?</h1>
+</section>
+
+<section>
+  <h1>The Actor Model<br/><small></small></h1>
+  <p>No locking necessary</p>
+  <footer>Carl Hewitt; Peter Bishop; Richard Steiger (1973). A Universal Modular Actor Formalism for Artificial Intelligence. IJCAI.</footer>
+</section>
+
+<section>
+  <h1>The Actor Model<br/><small></small></h1>
+  <p>No locking necessary</p>
+  <footer>Carl Hewitt; Peter Bishop; Richard Steiger <b style="font-size:140%">(1973)</b>. A Universal Modular Actor Formalism for Artificial Intelligence. IJCAI.</footer>
+</section>
+
+<section>
+  <h1>Actors are</h1>
+  <ul>
+    <li>Individual computation units</li>
+    <li>Communiction units</li>
+  </ul>
+</section>
+
+<section>
+  <h1>Actors compute each message serially</h1>
+</section>
+
+<section>
+  <h2>Actors can simultaneously</h2>
+  <ul>
+    <li>Send messages</li>
+    <li>Create new actors</li>
+    <li>Designate what happens with messages</li>
+  </ul>
+</section>
+
+<section>
+  <h1>No strict message ordering!</h1>
+  <center>The messaging is asynchronous</center>
+</section>
+
+<section>
+  <h1>No strict message ordering!</h1>
+  <p>But...</p>
+</section>
+
+<section>
+  <h1>No strict message ordering!</h1>
+  <p>But... there are some rules</p>
+</section>
+
+<section>
+  <h2>Activation Ordering <small>(Hewitt, 2006)</small></h2>
+  <ul class="incremental">
+    <li>Causality is preserved</li>
+    <li>Relativistic Invariance<br/>$\Rightarrow$ other nodes see the same causality</li>
+  </ul>
+</section>
+
+<section>
+  <h1>Arrival Ordering <br/><small>(Hewitt, 2006)</small></h1>
+  <center>It's guaranteed that two consecutive messages from actor A to actor B will arrive in that order!</center>
+</section>
+
+<section>
+  <h1><img src="img/erlang-logo.svg" /></h1>
+  <center>A programming language based on actors
+  <br/><small>(designed 1986 by Ericcson)</small>
+  </center>
+</section>
+
+<section>
+  <h1>This is NO Erlang programming lecture</h1>
+  <footer>A nice introduction into Erlang is "<a href="http://learnyousomeerlang.com">Learn you some erlang</a>"</footer>
+</section>
+
+<section>
+  <h1>Generally speaking:</h1>
+  <center>You design actors in Erlang and link them together</center>
+</section>
+
+<section>
+  <h1>Erlang has some nice features!</h1>
+</section>
+
+<section>
+    <h1>Erlang is functional</h1>
+    <p>In some parts it is pure <br/>(e.g single assignment)</p>
+</section>
+
+<section>
+  <h1>Erlang discourages:</h1>
+  <p>Incidental or hidden state<br/><small>Usually the state are the <b>messages</b> and the <b>actor network</b></small></p>
+</section>
+
+<section>
+  <h1>Hot swapping</h1>
+  <p>Exchange a part of the code on the fly</p>
+</section>
+
+<section>
+  <h1>Hot swapping</h1>
+  <p>Simply exchange an actor</p>
+</section>
+
+<section>
+  <h1>Hot swapping</h1>
+  <p>State is encoded in messages</p>
+</section>
+
+<section>
+  <h1>Hot swapping</h1>
+  <p>Actor computation is referentially transparent</p>
+</section>
+
+<section>
+  <h2>Hot swapping</h2>
+  <p>Erlang has a way of abstracting actor "adresses"</p><center>("adresses" are usually called process IDs in Erlang)</center>
+</section>
+
+<section>
+  <h1>Erlang is fault tolerant</h1>
+</section>
+
+<section>
+  <h1>Erlang is fault tolerant</h1>
+  <p>"Let it crash!"</p>
+</section>
+
+<section>
+  <h1>Erlang is fault tolerant</h1>
+  <p>If an actor crashes you can simply restart it</p>
+</section>
+
+<section>
+  <h1>Erlang is fault tolerant</h1>
+  <p>System doesn't stop on crashes!</p>
+</section>
+
+<section>
+  <h1>Erlang is fault tolerant</h1>
+  <p>Is able to work even if parts changed and you weren't prepared</p>
+</section>
+
+<section>
+  <h1>Erlang reduces controlflow complexity</h1>
+</section>
+
+<section>
+  <h1>Erlang is not the key to everything!</h1>
+</section>
+
+<section>
+  <h1>Where to use</h1>
+  <p>In communication problems (Chat/Telephony/etc.)</p>
+</section>
+
+<section>
+  <h2>Where not to use</h2>
+  <p>Embarassingly parallel problems</p><center>(Nearly no communication required)</center>
+</section>
+
+<section>
+  <h1>Other interesting ideas</h1>
+  <center>CSP = Communicating Sequential processes</center>
+</section>
+
+<section>
+  <h1>CSP is similar to Actors</h1>
+</section>
+
+<section>
+  <h2>CSP differences</h2>
+  <p>Communication annonymously via channels</p>
+
+  <center>This can be a huge advantage!</center>
+</section>
+
+<section>
+  <h1>CSP differences</h1>
+  <p><small>Channels are not asynchronous</small></p>
+  <center>Transmission and reception must happen at the same time</center>
+</section>
+
+<section>
+  <h1>CSP Languages</h1>
+  <ul>
+    <li>Occam (first of its kind, 1983)</li>
+    <li>Go (Googles language)</li>
+    <li>Clojure (with async)</li>
+  </ul>
+</section>
+
+<section>
+  <h1>CSP Languages</h1>
+  <ul>
+    <li>Occam (first of its kind, 1983)  <b>Ugly</b></li>
+    <li>Go (Googles language)</li>
+    <li>Clojure (with async)</li>
+  </ul>
+</section>
+
+<section>
+  <h1>CSP Languages</h1>
+  <ul>
+    <li>Occam (first of its kind, 1983)  <b>Ugly</b></li>
+    <li>Go (Googles language)</li>
+    <li>Clojure (with async) <b style="font-size:150%">Immutability!</b></li>
+  </ul>
+</section>
+
+<section>
+  <h1>Why Immutability?</h1>
+  <p>It cannot go wrong if the processes can't change anything</p>
+</section>
+
+<section>
+  <h1>Immutability is strange...</h1>
+  <p>You have to think differently</p>
+</section>
+
+<section>
+  <h1>Give it a try...</h1>
+</section>
+
+<section>
+  <h2>Thank you for your attention!</h2>
+  <br/>
+  <center>Next presentation</center>
+  <p><b>Topic: </b>Buggy?!</p>
+  <img src="img/max.jpg" style="border-radius:50%; position:absolute; right:5%; bottom:10%" height="200"/>
+  <img src="img/rasmus.jpg" style="border-radius:50%; position:absolute; right:20%; bottom:10%" height="200"/>
+</section>
+
+<div id="progress-bar"></div>
+
+<!-- Default Style -->
+<script src="style/dzexstyle.css.js"></script>
+<script src="dzslides.js"></script>
+
+<!-- Default Style -->
+<script src="style/style.js"></script>
+<script src="style/dzexstyle.css.js"></script>
+<script src="style/style.css.js"></script>
+<script>
+hljs.initHighlightingOnLoad();
+
+jQuery(document).ready(function($){
+
+ jQueryLoadCSS = function(cssString) {
+     var cssTag = $("<style>" + cssString + "</style>");
+     $("head").append(cssTag);
+ };
+
+ Dz.width = 1600;
+ Dz.height = 1200;
+ dztemplate = Handlebars.templates["dzexstyle.css"];
+ template = Handlebars.templates["style.css"];
+ loadCss(Dz, dztemplate, template, jQueryLoadCSS);
+
+ initializeMathjax();
+ controlMeanIFrame();
+});
+</script>
+<!-- vim: set fdm=marker: }}} -->
+</body>
+</html>
